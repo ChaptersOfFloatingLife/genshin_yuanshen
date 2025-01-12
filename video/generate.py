@@ -1,4 +1,5 @@
 from moviepy import ImageClip, AudioFileClip, CompositeVideoClip
+import json
 
 def generate_video(image_path, audio_path, output_path):
     """
@@ -26,9 +27,12 @@ def generate_video(image_path, audio_path, output_path):
     video.close()
 
 if __name__ == "__main__":
-    # 示例使用
-    image_path = "/Users/xpw/ws/genshin_yuanshen/videos/resource/散兵_封面.jpg"    # 替换为你的图片路径
-    audio_path = "/Users/xpw/ws/genshin_yuanshen/videos/resource/散兵_这是一条新的通知.wav"    # 替换为你的音频路径
-    output_path = "/Users/xpw/ws/genshin_yuanshen/videos/output/output_video.mp4"         # 输出视频路径
+    # 读取脚本配置
+    with open("output/script.json", "r", encoding="utf-8") as f:
+        script = json.load(f)
+    
+    image_path = script["cover_image"]    # 从script.json中读取封面图片路径
+    audio_path = "output/voice.wav"    # 替换为你的音频路径
+    output_path = "output/video.mp4"         # 输出视频路径
     
     generate_video(image_path, audio_path, output_path)

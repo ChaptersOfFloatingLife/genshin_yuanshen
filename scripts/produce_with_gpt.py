@@ -112,7 +112,7 @@ if __name__ == "__main__":
     chat = ChatWithGPT()
     
     # 读取 prompts
-    system_prompt = chat.read_prompt_from_file('text/genshin_prompts/system.txt', is_json=False)
+    system_prompt = chat.read_prompt_from_file('scripts/genshin_prompts/system.txt', is_json=False)
     user_data = chat.read_prompt_from_file(args.user_data, is_json=True)
     user_prompt = user_data.get('user_prompt', '')
 
@@ -123,4 +123,5 @@ if __name__ == "__main__":
     )
     
     # 保存合并后的内容
+    print("保持到 output/script.json")
     chat.save_content('output/script.json', response, user_data)

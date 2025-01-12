@@ -1,0 +1,8 @@
+# 环境变量文件
+.env
+
+output
+cookies
+
+.DS_Store
+__pycache__
