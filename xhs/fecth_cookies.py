@@ -2,7 +2,10 @@ import os
 import time
 import json
 
-from liulanqi import COOKING_PATH, get_driver
+from liulanqi import get_driver
+
+COOKING_PATH = "cookies"
+os.makedirs(COOKING_PATH, exist_ok=True)
 
 XIAOHONGSHU_COOKING = os.path.join(COOKING_PATH, "xiaohongshu.json")
 

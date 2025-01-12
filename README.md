@@ -16,7 +16,23 @@
 3. 运行 
 
 ```
+# 生成脚本/剧本
 python text/chatwithgpt.py resource/Xiao_魈.json
+
+# 克隆语音
+python voice/clone.py
+
+# 合成视频
+python video/video_generate.py
+
+# 生成小红书 cookie（需要手动登录，暂未找到官方 API）
+python xhs/fetch_cookies.py
+
+> 请在浏览器中完成登录，然后按回车继续...
+> 已保存 13 个 cookies
+
+# 发布小红书
+python xhs/publish.py
 ```
 
 ## 🛠️ 技术栈

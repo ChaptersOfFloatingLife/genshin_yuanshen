@@ -136,7 +136,8 @@ if __name__ == "__main__":
     speaker = content["name"]
     text = content["content"]
     output_path = "output/voice.wav"
-        
+    
+    print("开始克隆语音")
     # 克隆语音
     audio_path = cloner.clone_voice(
         text=text,
