@@ -19,6 +19,9 @@
 # 生成脚本/剧本
 python scripts/produce_with_gpt.py resource/Xiao_魈.json
 
+# 添加文字
+python image/add_text.py
+
 # 克隆语音
 python voice/clone.py
 

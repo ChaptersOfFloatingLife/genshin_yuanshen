@@ -4,6 +4,7 @@ from openai import OpenAI
 import argparse
 from dotenv import load_dotenv
 from typing import Union
+import re
 
 class ChatWithGPT:
     def __init__(self):
@@ -83,14 +84,28 @@ class ChatWithGPT:
             gpt_response: GPT 生成的回复
             user_data: 用户的 JSON 数据
         """
-        # gpt response 只保留中文、英文、数字、常用标点和空格
-        valid_chars = '，。！？“”""'' '
-        cleaned_response = ''.join(char for char in gpt_response if char.isalnum() or char in valid_chars)
-        # 更新 user_data 中的内容
-        user_data['content'] = cleaned_response
-        user_data.pop('user_prompt')
+        print("gpt_response", gpt_response)
+        try:
+            # 使用正则表达式提取 {} 内的 JSON 内容
+            json_match = re.search(r'{.*}', gpt_response, re.DOTALL)
+            if not json_match:
+                raise ValueError("未找到有效的 JSON 内容")
+            
+            json_str = json_match.group()
+            response_data = json.loads(json_str)
+            
+            # 更新 user_data 中的内容
+            user_data['content'] = response_data
+            user_data.pop('user_prompt', None)
+            
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"JSON 解析错误: {str(e)}")
+            # 如果解析失败，保存原始响应
+            user_data['content'] = gpt_response
         
         try:
+            user_data['cover_image'] = "output/src_image.jpg"
+            user_data['content_extra'] = """💡主页还有✨收藏超多好玩的文案，快来看看你喜欢的角色都说了什么吧~ 很多有趣的文案都是来自群友们的脑洞，真的超级棒！\n🎀想要听喜欢角色语音？\n欢迎来群里和大家一起创作文案！一起讨论，一起分享"""
             with open(file_path, 'w', encoding='utf-8') as file:
                 json.dump(user_data, file, ensure_ascii=False, indent=2)
         except Exception as e:
