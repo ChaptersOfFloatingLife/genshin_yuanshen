@@ -109,7 +109,7 @@ def add_artistic_text(image_path, text1, text2, output_path=None,
         text1_line2 = text1[split_point:]
         
         # 计算第一行文字的字体大小和位置
-        target_width1 = int(img.width * 0.9)
+        target_width1 = int(img.width * 0.8)
         font1, text_width1, text_height1 = calculate_font_size(text1_line1, font_path, target_width1)
         x1 = (img.width - text_width1) // 2
         y1 = 50  # 距离顶部50像素
@@ -196,7 +196,7 @@ if __name__ == "__main__":
         config = json.load(f)
     
     # 从配置获取参数
-    cover_image = config['cover_image']
+    cover_image = "output/tmp_image.jpg"
     content = config['content']
     text1 = content['title']
     text2 = f"让全世界都听见 {config['name']}"

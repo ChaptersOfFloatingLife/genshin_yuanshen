@@ -59,7 +59,7 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
     # content = scripts.get("name", "")
     # driver.find_element(
     #     "xpath", '//*[@placeholder="填写标题会有更多赞哦～"]').send_keys(content)
-    content = scripts.get("content", "")
+    content = scripts["content"]
 
     time.sleep(1)
     # 填写描述
@@ -67,8 +67,10 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
         By.CSS_SELECTOR, 
         'div.ql-editor[data-placeholder="输入正文描述，真诚有价值的分享予人温暖"]'
     )
-    content_clink.send_keys(content+"\n")
-
+    info = content["title"]+"\n"+content["script"]+"\n"+scripts["content_extra"]+"\n"
+    print(info)
+    content_clink.send_keys(info) 
+    
     time.sleep(3)
     # 标签
     for tag in scripts.get("tags", []):

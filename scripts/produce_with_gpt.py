@@ -104,8 +104,9 @@ class ChatWithGPT:
             user_data['content'] = gpt_response
         
         try:
-            user_data['cover_image'] = "output/src_image.jpg"
-            user_data['content_extra'] = """💡主页还有✨收藏超多好玩的文案，快来看看你喜欢的角色都说了什么吧~ 很多有趣的文案都是来自群友们的脑洞，真的超级棒！\n🎀想要听喜欢角色语音？\n欢迎来群里和大家一起创作文案！一起讨论，一起分享"""
+            user_data['cover_image'] = "output/image.jpg"
+
+            user_data['content_extra'] = "\n主页还有收藏超多好玩的文案，快来看看你喜欢的角色都说了什么吧~\n很多有趣的文案都是来自群友们的脑洞，真的超级棒！\n想要听喜欢角色语音？\n欢迎来群里和大家一起创作文案！一起讨论，一起分享"
             with open(file_path, 'w', encoding='utf-8') as file:
                 json.dump(user_data, file, ensure_ascii=False, indent=2)
         except Exception as e:
@@ -128,7 +129,9 @@ if __name__ == "__main__":
     
     # 读取 prompts
     system_prompt = chat.read_prompt_from_file('scripts/genshin_prompts/system.txt', is_json=False)
+    print(args.user_data)
     user_data = chat.read_prompt_from_file(args.user_data, is_json=True)
+    print("user_data", user_data)
     user_prompt = user_data.get('user_prompt', '')
 
     # 获取 GPT 回复

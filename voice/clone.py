@@ -133,8 +133,8 @@ if __name__ == "__main__":
     with open("output/script.json", "r", encoding="utf-8") as f:
         content = json.load(f)
 
-    speaker = content["name"]
-    text = content["content"]
+    speaker = f"{content['name']}【原神】"
+    text = content["content"]["script"]
     output_path = "output/voice.wav"
     
     print("开始克隆语音")
