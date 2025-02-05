@@ -3,7 +3,7 @@
 set -e  # 如果某个命令失败，立即退出脚本
 
 # 设置起始日期 (YYYY-MM-DD)
-start_date="2025-01-20"
+start_date="2025-02-06"
 start_time="18:00"
 resource_path="resource/wanye_万叶.json"
 image_folder="resource/wanye_万叶"
@@ -41,4 +41,5 @@ for ((i=0; i<${#image_files[@]}; i++)); do
     python voice/clone.py
     python video/generate.py
     python xhs/publish.py "$publish_datetime"
+    exit 0
 done

@@ -31,8 +31,9 @@ class VoiceCloner:
     def clone_voice(
         self,
         text: str,
-        speaker: str = "魈【原神】",
-        emotion: str = "中立",
+        model_name: str = "【原神】稻妻",
+        speaker_name: str = "枫原万叶",
+        emotion: str = "随机",
         text_language: str = "中文",
         speed_factor: float = 1.0,
         output_path: Optional[str] = None
@@ -44,7 +45,7 @@ class VoiceCloner:
             speaker: 说话人角色
             emotion: 情感类型
             text_language: 文本语言
-            speed_factor: 语速
+            speed_factor: 语速  
             output_path: 输出音频文件路径
             
         Returns:
@@ -53,26 +54,25 @@ class VoiceCloner:
         # 构建请求参数
         payload = {
             "access_token": self.access_token,
-            "type": "tts",
-            "brand": "gpt-sovits",
-            "name": "anime",
-            "method": "api",
-            "prarm": {
-                "speaker": speaker,
-                "emotion": emotion,
-                "text": text,
-                "text_language": text_language,
-                "text_split_method": "按标点符号切",
-                "fragment_interval": 0.3,
-                "batch_size": 1,
-                "batch_threshold": 0.75,
-                "parallel_infer": True,
-                "split_bucket": True,
-                "top_k": 10,
-                "top_p": 1.0,
-                "temperature": 1.0,
-                "speed_factor": speed_factor
-            }
+            "model_name": model_name,
+            "speaker_name": speaker_name,
+            "prompt_text_lang": text_language,
+            "emotion": emotion,
+            "text": text,
+            "text_lang": text_language,
+            "top_k": 10,
+            "top_p": 1,
+            "temperature": 1,
+            "text_split_method": "按标点符号切",
+            "batch_size": 1,
+            "batch_threshold": 0.75,
+            "split_bucket": True,
+            "speed_facter": speed_factor,
+            "fragment_interval": 0.3,
+            "media_type": "wav",
+            "parallel_infer": True,
+            "repetition_penalty": 1.35,
+            "seed": -1
         }
 
         try:
@@ -106,11 +106,11 @@ class VoiceCloner:
             
             result = response.json()
             
-            if not result.get("audio"):
+            if not result.get("audio_url"):
                 raise Exception(f"语音合成失败: {result.get('message')}")
                 
             # 下载音频文件
-            audio_url = result["audio"]
+            audio_url = result["audio_url"]
             if output_path:
                 audio_response = requests.get(audio_url)
                 audio_response.raise_for_status()
@@ -133,7 +133,8 @@ if __name__ == "__main__":
     with open("output/script.json", "r", encoding="utf-8") as f:
         content = json.load(f)
 
-    speaker = f"{content['name']}【原神】"
+    model_name = content["country"]
+    speaker_name = f"{content['name']}"
     text = content["content"]["script"]
     output_path = "output/voice.wav"
     
@@ -141,7 +142,8 @@ if __name__ == "__main__":
     # 克隆语音
     audio_path = cloner.clone_voice(
         text=text,
-        speaker=speaker,
+        model_name=model_name,
+        speaker_name=speaker_name,
         output_path=output_path
     )
     
