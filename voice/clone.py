@@ -105,6 +105,9 @@ class VoiceCloner:
             response.raise_for_status()
             
             result = response.json()
+
+            if result.get("msg") == "参考音频不存在":
+                raise Exception(f"参考音频不存在")
             
             if not result.get("audio_url"):
                 raise Exception(f"语音合成失败: {result.get('message')}")
@@ -133,18 +136,28 @@ if __name__ == "__main__":
     with open("output/script.json", "r", encoding="utf-8") as f:
         content = json.load(f)
 
-    model_name = content["country"]
     speaker_name = f"{content['name']}"
     text = content["content"]["script"]
     output_path = "output/voice.wav"
     
     print("开始克隆语音")
     # 克隆语音
-    audio_path = cloner.clone_voice(
-        text=text,
-        model_name=model_name,
-        speaker_name=speaker_name,
-        output_path=output_path
-    )
-    
-    print(f"语音文件已保存至: {audio_path}")
+
+    for model_name in ["稻妻", "璃月", "蒙德", "降临者", "须弥", "纳塔", "枫丹"]:
+        model_name = f"【原神】{model_name}"
+        try:
+            audio_path = cloner.clone_voice(
+                text=text,
+                model_name=model_name,
+                speaker_name=speaker_name,
+                output_path=output_path
+            )
+            print(f"语音文件已保存至: {audio_path}")
+            break  # 成功生成语音后退出循环
+        except Exception as e:
+            if "参考音频不存在" in str(e):
+                print(f"模型 {model_name} 不存在该角色的参考音频，尝试下一个模型")
+                continue
+            else:
+                print(f"发生错误: {str(e)}")
+                raise  # 对于其他错误，向上传播异常
