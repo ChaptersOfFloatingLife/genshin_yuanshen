@@ -13,8 +13,14 @@
 
 1. 克隆项目
 2. 安装依赖
-3. 运行 
+3. 运行
 
+```
+# For auto run
+bash auto.sh
+```
+
+# 生成脚本/剧本
 ```
 # 生成脚本/剧本
 python scripts/produce_with_gpt.py resource/Xiao_魈.json
