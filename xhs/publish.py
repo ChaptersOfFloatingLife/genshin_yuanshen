@@ -107,7 +107,7 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
     time.sleep(1)
 
     # 等待发布按钮变为可点击状态
-    publish_button = WebDriverWait(driver, 100).until(
+    publish_button = WebDriverWait(driver, 1000).until(
         EC.element_to_be_clickable((
             By.XPATH,
             '//span[contains(@class, "d-text") and text()="定时发布"]'
