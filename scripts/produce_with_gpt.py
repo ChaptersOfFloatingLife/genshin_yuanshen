@@ -107,7 +107,7 @@ class ChatWithGPT:
             user_data['cover_image'] = "output/image.jpg"
 
             name = user_data['name']
-            user_data['content_extra'] = f"""{name}的提醒服务，把喜欢的角色语音设为提醒，让{name}的声音陪伴你的每一天，简单几步就能设置，手机通用哦~，如果有需要定制的内容，可以私信我哦~，创作不易求个关注\n自定义闹钟设置教程：可以看主页的设置置顶合集\n如何获取语音？点赞+关注，评论你想要的角色，私信我需要的语音，会第一时间发送资源\n主页更多专属原神语音等你解锁\n欢迎来群里和大家一起创作！大家一起脑洞文案，一起讨论，一起分享"""
+            user_data['content_extra'] = f"""{name}的提醒服务，把喜欢的角色语音设为提醒，让{name}的声音陪伴你的每一天，简单几步就能设置，手机通用哦~，如果有需要定制的内容，可以私信我哦~，创作不易求个关注\n自定义闹钟设置教程：可以看主页的设置置顶合集\n\nGPT-SoVITS开发者：@花儿不哭\n模型训练者：@红血球AE3803 & @白菜工厂1145号员工\n推理特化包适配 & 在线推理：@AI-Hobbyist"""
             with open(file_path, 'w', encoding='utf-8') as file:
                 json.dump(user_data, file, ensure_ascii=False, indent=2)
         except Exception as e:
