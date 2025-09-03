@@ -38,6 +38,21 @@ def xiaohongshu_login(driver):
         time.sleep(2)
 
 
+def _find_first(driver, selectors, timeout=30):
+    """Return the first element found by trying selectors in order.
+    selectors: list of (By, value)
+    Fails fast if none appear within timeout.
+    """
+    def _probe(d):
+        for by, val in selectors:
+            els = d.find_elements(by, val)
+            if els:
+                return els[0]
+        return False
+
+    return WebDriverWait(driver, timeout).until(_probe)
+
+
 def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
     """发布小红书视频函数
     Args:
@@ -55,17 +70,24 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
     video = driver.find_element("xpath", '//input[@type="file"]')
     video.send_keys(video_path)
 
-    # 填写标题
-    # content = scripts.get("name", "")
-    # driver.find_element(
-    #     "xpath", '//*[@placeholder="填写标题会有更多赞哦～"]').send_keys(content)
+    # 填写标题（最多20个字符）
     content = scripts["content"]
+    title_text = content.get("title")
+    title_input = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@placeholder="填写标题会有更多赞哦～"]'))
+    )
+    title_input.clear()
+    title_input.send_keys(title_text)
 
     time.sleep(1)
-    # 填写描述
-    content_clink = driver.find_element(
-        By.CSS_SELECTOR, 
-        'div.ql-editor[data-placeholder="输入正文描述，真诚有价值的分享予人温暖"]'
+    # 填写描述（兼容新版编辑器）
+    content_clink = _find_first(
+        driver,
+        [
+            (By.CSS_SELECTOR, 'div.ql-editor[data-placeholder="输入正文描述，真诚有价值的分享予人温暖"]'),
+            (By.CSS_SELECTOR, 'div[contenteditable="true"]'),
+            (By.XPATH, '//div[@contenteditable="true"]')
+        ],
     )
     info = content["title"]+"\n"+content["script"]+"\n"+scripts["content_extra"]+"\n"
     print(info)
@@ -75,12 +97,16 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
     # 标签
     for tag in scripts.get("tags", []):
         tag = "#" + tag
+        # 保证焦点在编辑器内
+        content_clink.click()
         content_clink.send_keys(tag)
         time.sleep(1)
         
-        # 直接按回车键确认标签
+        # 直接按回车键确认标签，再加一个空格断开
         content_clink.send_keys(Keys.ENTER)
-        time.sleep(0.5)  # 给一点时间让标签完成添加
+        time.sleep(0.3)
+        content_clink.send_keys(" ")
+        time.sleep(0.2)
 
     # 定时发布按钮定位
     schedule_button = driver.find_element(
@@ -94,20 +120,21 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
 
     time.sleep(5)
     # 找到时间输入框并输入时间
-    input_time = driver.find_element(
-        By.XPATH, 
-        '//input[@placeholder="选择日期和时间"]'
+    input_time = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, '//input[@placeholder="选择日期和时间"]'))
     )
-    # 清除默认值
-    input_time.clear()  # 先清除
-    input_time.send_keys(Keys.CONTROL, 'a')  # 再次全选以确保清除
-    input_time.send_keys(Keys.DELETE)  # 删除所有内容
-    time.sleep(1)  # 等待清除完成
-    input_time.send_keys(publish_time)  # 输入新时间
+    # 解除只读并填写时间
+    driver.execute_script('arguments[0].removeAttribute("readonly");', input_time)
+    input_time.clear()
+    input_time.send_keys(Keys.CONTROL, 'a')
+    input_time.send_keys(Keys.DELETE)
+    time.sleep(0.5)
+    input_time.send_keys(publish_time)
+    input_time.send_keys(Keys.TAB)
     time.sleep(1)
 
     # 等待发布按钮变为可点击状态
-    publish_button = WebDriverWait(driver, 1000).until(
+    publish_button = WebDriverWait(driver, 60).until(
         EC.element_to_be_clickable((
             By.XPATH,
             '//span[contains(@class, "d-text") and text()="定时发布"]'
