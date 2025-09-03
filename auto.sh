@@ -2,8 +2,8 @@
 
 set -e  # 如果某个命令失败，立即退出脚本
 
-# 激活虚拟环境
-# source ~/myenv/bin/activate
+# 激活 UV 虚拟环境
+source .venv/bin/activate
 
 # 设置起始日期为当前日期
 start_date=$(date "+%Y-%m-%d")

@@ -6,3 +6,8 @@ cookies
 
 .DS_Store
 __pycache__
+
+# UV Python package manager
+.venv/
+uv.lock
+*.egg-info/

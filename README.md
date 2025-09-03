@@ -11,37 +11,77 @@
 
 ## 🚀 快速开始
 
-1. 克隆项目
-2. 安装依赖
-3. 运行
+### 前置要求
+- Python 3.9+
+- [UV](https://docs.astral.sh/uv/) 包管理器
 
+### 安装步骤
+
+1. **克隆项目**
+```bash
+git clone <repository-url>
+cd genshin_yuanshen
 ```
-# For auto run
+
+2. **安装依赖**
+```bash
+# 使用 UV 安装所有依赖
+uv sync
+```
+
+3. **配置环境变量**
+```bash
+cp .env.example .env
+# 编辑 .env 文件，添加你的 API 密钥
+```
+
+4. **运行项目**
+```bash
+# 自动运行所有角色
 bash auto.sh
+
+# 或者单独运行某个步骤
+uv run python scripts/produce_with_gpt.py resource/Xiao_魈.json
 ```
 
+### 手动步骤运行
+
+如果你想分步骤运行，可以使用以下命令：
+
+```bash
+# 激活环境
+source .venv/bin/activate
+
 # 生成脚本/剧本
-```
-# 生成脚本/剧本
-python scripts/produce_with_gpt.py resource/Xiao_魈.json
+python3 scripts/produce_with_gpt.py resource/Xiao_魈.json
 
 # 添加文字
-python image/add_text.py
+python3 image/add_text.py
 
 # 克隆语音
-python voice/clone.py
+python3 voice/clone.py
 
 # 合成视频
-python video/generate.py
+python3 video/generate.py
 
 # 生成小红书 cookie（需要手动登录，暂未找到官方 API），仅需执行一次
-python xhs/fetch_cookies.py
-
-> 请在浏览器中完成登录，然后按回车继续...
-> 已保存 13 个 cookies
+python3 xhs/fetch_cookies.py
 
 # 发布小红书
-python xhs/publish.py "2025-01-12 16:00"
+python3 xhs/publish.py "2025-01-12 16:00"
+```
+
+### 开发环境
+
+```bash
+# 安装开发依赖
+uv sync --group dev
+
+# 代码格式化
+uv run black .
+
+# 代码检查
+uv run ruff check .
 ```
 
 ## 🛠️ 技术栈
