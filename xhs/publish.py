@@ -53,16 +53,16 @@ def _find_first(driver, selectors, timeout=30):
     return WebDriverWait(driver, timeout).until(_probe)
 
 
-def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
+def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00", video_path="output/video.mp4"):
     """发布小红书视频函数
     Args:
         driver: WebDriver实例
-        mp4: 包含视频路径和标题的元组
-        index: 视频序号
+        scripts: 包含视频信息的字典
+        publish_time: 发布时间
+        video_path: 视频文件路径
     """
     time.sleep(3)
 
-    video_path="output/video.mp4"
     video_path = os.path.abspath(video_path)
     print("开始上传文件", video_path)
     time.sleep(3)
@@ -146,6 +146,38 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00"):
 
     print("视频发布完成！")
 
+def publish_xhs_content(scripts_data, publish_time=None, video_path="output/video.mp4"):
+    """Publish content to XHS programmatically.
+    
+    Args:
+        scripts_data (dict): Content data with name, tags, content, etc.
+        publish_time (str, optional): Publish time in format "2025-01-12 16:00"
+        video_path (str): Path to the video file
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    driver = None
+    try:
+        driver = get_driver()
+        xiaohongshu_login(driver=driver)
+        print("登录成功")
+
+        print("Content data:", scripts_data)
+
+        publish_xiaohongshu(driver, scripts_data, publish_time, video_path)
+        return True
+
+    except Exception as e:
+        print(f"发布失败: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
+    finally:
+        if driver:
+            driver.quit()  # 退出浏览器
+
+
 def main():
     # 检查是否提供了发布时间参数
     if len(sys.argv) != 2:
@@ -156,18 +188,17 @@ def main():
     print(publish_time)
 
     try:
-        driver = get_driver()
-        xiaohongshu_login(driver=driver)
-        print("登录成功")
-
         with open("output/script.json", "r", encoding="utf-8") as f:
             scripts = json.load(f)
-        print(scripts)
+        
+        success = publish_xhs_content(scripts, publish_time)
+        if not success:
+            sys.exit(1)
 
-        publish_xiaohongshu(driver, scripts, publish_time)
+    except Exception as e:
+        print(f"错误: {str(e)}")
+        sys.exit(1)
 
-    finally:
-        driver.quit()  # 退出浏览器
 
 if __name__ == "__main__":
     main()

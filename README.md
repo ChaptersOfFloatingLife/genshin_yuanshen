@@ -6,8 +6,10 @@
 
 - 🎤 **原神角色语音克隆**：让魈、派蒙、胡桃等角色为你发声
 - 📝 **小红书风格文案生成**：自动生成吸睛的小红书文案
+- 🚀 **HTTP API 发布**：通过 HTTP 接口快速发布内容到小红书
+- 🎥 **自动视频下载**：支持从 URL 自动下载视频并发布
 - 🤖 **AI 驱动**：基于最新的 AI 技术，包括 GPT 和语音克隆模型
-- 🎯 **简单易用**：友好的命令行界面，轻松上手
+- 🎯 **简单易用**：友好的命令行界面和 REST API，轻松上手
 
 ## 🚀 快速开始
 
@@ -71,17 +73,37 @@ python3 xhs/fetch_cookies.py
 python3 xhs/publish.py "2025-01-12 16:00"
 ```
 
-### 开发环境
+## 🌐 HTTP API 发布
+
+新增的 HTTP API 让发布内容变得更简单！
+
+### 启动 API 服务器
 
 ```bash
-# 安装开发依赖
-uv sync --group dev
+# 启动 API 服务器
+python xhs/api_server.py
 
-# 代码格式化
-uv run black .
+# 服务器将在 http://localhost:8000 启动
+# API 文档: http://localhost:8000/docs
+```
 
-# 代码检查
-uv run ruff check .
+### API 使用方法
+
+**发布内容到小红书**（支持视频 URL 自动下载）:
+
+```bash
+  curl -X POST "http://localhost:8000/publish" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "魈",
+      "tags": "#原神 #魈 #声控",
+      "content": {
+        "title": "魈的测试",
+        "script": "测试API功能"
+      },
+      "video_url": "https://www.w3schools.com/html/mov_bbb.mp4",
+      "publish_time": "2026-01-01 18:00"
+    }'
 ```
 
 ## 🛠️ 技术栈
