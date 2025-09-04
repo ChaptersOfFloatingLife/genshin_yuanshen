@@ -106,6 +106,14 @@ python xhs/api_server.py
     }'
 ```
 
+### API magic
+
+```bash
+docker build --platform linux/amd64 -t cf-proxy .                                                                                                                                                                                            │
+docker run --platform linux/amd64 --network host -e ORIGIN_URL="http://host.docker.internal:8000" cf-proxy
+# And curl via http from worldwide ~
+```
+
 ## 🛠️ 技术栈
 
 - OpenAI GPT API
