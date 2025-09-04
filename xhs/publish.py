@@ -70,14 +70,16 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00", video_
     video = driver.find_element("xpath", '//input[@type="file"]')
     video.send_keys(video_path)
 
-    # 填写标题（最多20个字符）
+    # 填写标题（最多20个字符）- 使用JavaScript避免emoji问题
     content = scripts["content"]
     title_text = content.get("title")
     title_input = WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.XPATH, '//*[@placeholder="填写标题会有更多赞哦～"]'))
     )
     title_input.clear()
-    title_input.send_keys(title_text)
+    # 使用JavaScript设置值，避免ChromeDriver的emoji限制
+    driver.execute_script("arguments[0].value = arguments[1];", title_input, title_text)
+    driver.execute_script("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", title_input)
 
     time.sleep(1)
     # 填写描述（兼容新版编辑器）
@@ -89,9 +91,11 @@ def publish_xiaohongshu(driver, scripts, publish_time="2025-01-12 16:00", video_
             (By.XPATH, '//div[@contenteditable="true"]')
         ],
     )
-    info = content["title"]+"\n"+content["script"]+"\n"+scripts["content_extra"]+"\n"
+    info = content["script"]+"\n"+scripts["content_extra"]+"\n"
     print(info)
-    content_clink.send_keys(info) 
+    # 使用JavaScript设置内容，避免emoji问题
+    driver.execute_script("arguments[0].innerText = arguments[1];", content_clink, info)
+    driver.execute_script("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", content_clink) 
     
     time.sleep(3)
     # 标签
